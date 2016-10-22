@@ -48,7 +48,7 @@ sub dbh {
 sub check_token {
     my ($dbh, $csrf_token) = @_;
     my $token = $dbh->select_row(q[
-        SELECT `id`, `csrf_token`, `created_at` FROM `tokens`
+        SELECT `id`, `created_at` FROM `tokens`
         WHERE `id` = ?
           AND `created_at` > CURRENT_TIMESTAMP(6) - INTERVAL 1 DAY
     ], $csrf_token);
@@ -154,9 +154,9 @@ sub update_room_watcher {
 post '/api/csrf_token' => sub {
     my ($self, $c) = @_;
     $self->dbh->query(q[
-        INSERT INTO `tokens` (`csrf_token`)
+        INSERT INTO `tokens` ()
         VALUES
-        ('')
+        ()
     ]);
 
     return $c->render_json({
