@@ -30,6 +30,12 @@ CREATE TABLE `rooms_by_strokes` (
   KEY (`last_strokes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `strokes_points` (
+  `stroke_id` bigint(20) NOT NULL,
+  `data` text NOT NULL,
+  PRIMARY KEY (`stroke_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `points` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `stroke_id` bigint(20) NOT NULL,
