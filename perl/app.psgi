@@ -16,21 +16,21 @@ my $root_dir = $FindBin::Bin;
 my $app = Isuketch::Web->new(root_dir => $root_dir);
 my $psgi_app = $app->build_app;
 
-my $rotatelogs = File::RotateLogs->new(
-    logfile      => '/tmp/access_log.%Y%m%d%H%M',
-    linkname     => '/tmp/access_log',
-    rotationtime => 3600,
-    maxage       => 86400, #1day
-);
+#my $rotatelogs = File::RotateLogs->new(
+#    logfile      => '/tmp/access_log.%Y%m%d%H%M',
+#    linkname     => '/tmp/access_log',
+#    rotationtime => 3600,
+#    maxage       => 86400, #1day
+#);
 
 builder {
-    enable 'AxsLog' => (
-        combined      => 1,
-        response_time => 1,
-        error_only    => 0,
-        ltsv          => 1,
-        logger        => sub { $rotatelogs->print(@_) }
-    );
+#    enable 'AxsLog' => (
+#        combined      => 1,
+#        response_time => 1,
+#        error_only    => 0,
+#        ltsv          => 1,
+#        logger        => sub { $rotatelogs->print(@_) }
+#    );
 
     mount '/' => sub {
         my ($env) = @_;
