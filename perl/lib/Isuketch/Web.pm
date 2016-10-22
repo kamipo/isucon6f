@@ -284,7 +284,7 @@ get '/api/rooms/:id' => sub {
 
 #    my $strokes = get_strokes($self->dbh, $room->{id}, 0);
     foreach my $stroke (@$strokes) {
-        if ($strokes->{data}) {
+        if ($stroke->{data}) {
             my $id = 1; # 適当でも通らないかな?
             my @points = map {
                 my @r = split(/\t/, $_);
