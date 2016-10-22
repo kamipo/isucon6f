@@ -280,7 +280,7 @@ get '/api/rooms/:id' => sub {
         LEFT JOIN strokes_points ON strokes.id = strokes_points.strokes_id
         WHERE `room_id` = ?
         ORDER BY `id` ASC;
-    ], $room_id, $greater_than_id);
+    ], $room->{id});
 
 #    my $strokes = get_strokes($self->dbh, $room->{id}, 0);
     foreach my $stroke (@$strokes) {
