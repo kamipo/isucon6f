@@ -193,7 +193,7 @@ get '/api/rooms' => sub {
     my $rooms = dbh->select_all(q[
         SELECT
             `rooms`.`id` AS `id`, `name`, `canvas_width`, `canvas_height`, `created_at`,
-            `last_strokes_id`.`stroke_count`
+            `last_strokes_id`, `stroke_count`
         FROM `rooms_by_strokes`
         JOIN `rooms` ON `room_id` = `rooms`.`id`
         ORDER BY `last_strokes_id` DESC
