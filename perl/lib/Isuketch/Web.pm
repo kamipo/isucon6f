@@ -294,7 +294,7 @@ get '/api/rooms/:id' => sub {
                     x         => $r[0],
                     y         => $r[1],
                 };
-            } grep { $_ } split(/\n/, @{ $strokes->{data} });
+            } grep { $_ } split(/\n/, @{ delete $stroke->{data} });
             $stroke->{points} = \@points;
         } else {
             # 古いデータ向け
