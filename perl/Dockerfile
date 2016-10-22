@@ -7,7 +7,8 @@ RUN mkdir /app/logs
 WORKDIR /app
 
 COPY cpanfile cpanfile.snapshot /app/
-RUN carton install --deployment
+#RUN carton install --deployment
+RUN carton install
 
 COPY . /app
 
