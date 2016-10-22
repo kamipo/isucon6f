@@ -435,7 +435,7 @@ post '/api/strokes/rooms/:id' => sub {
 
         $self->dbh->query(q[
             UPDATE `rooms_by_strokes` SET `last_strokes_id` = ?, `stroke_count` = `stroke_count` + 1 WHERE `room_id` = ?
-        ], $stroke_id, $room_id);
+        ], $stroke_id, $room->{id});
 
         $txn->commit;
     };
