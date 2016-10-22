@@ -17,8 +17,8 @@ my $app = Isuketch::Web->new(root_dir => $root_dir);
 my $psgi_app = $app->build_app;
 
 my $rotatelogs = File::RotateLogs->new(
-    logfile      => '/app/logs/access_log.%Y%m%d%H%M',
-    linkname     => '/app/logs/access_log',
+    logfile      => '/tmp/access_log.%Y%m%d%H%M',
+    linkname     => '/tmp/access_log',
     rotationtime => 3600,
     maxage       => 86400, #1day
 );
