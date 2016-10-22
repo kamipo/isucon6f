@@ -27,7 +27,7 @@ builder {
     enable 'AxsLog' => (
         combined      => 1,
         response_time => 1,
-        error_only    => 1,
+        error_only    => 0,
         ltsv          => 1,
         logger        => sub { $rotatelogs->print(@_) }
     );
