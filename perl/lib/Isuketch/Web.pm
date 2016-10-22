@@ -274,7 +274,7 @@ get '/api/rooms/:id' => sub {
         return $c->res;
     }
 
-    my $strokes = $dbh->select_all(q[
+    my $strokes = $self->dbh->select_all(q[
         SELECT `id`, `room_id`, `width`, `red`, `green`, `blue`, `alpha`, `created_at`, strokes_points.data
         FROM `strokes`
         LEFT JOIN strokes_points ON strokes.id = strokes_points.strokes_id
