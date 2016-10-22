@@ -5,3 +5,6 @@ requires 'Plack';
 requires 'Starlet';
 requires 'DateTime::Format::MySQL';
 requires 'DateTime::Format::RFC3339';
+
+requires 'Plack::Middleware::AxsLog';
+requires 'File::RotateLogs';
