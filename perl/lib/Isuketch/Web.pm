@@ -291,8 +291,8 @@ get '/api/rooms/:id' => sub {
                 +{
                     id        => $id++,
                     stroke_id => $stroke->{id},
-                    x         => $r->[0],
-                    y         => $r->[1],
+                    x         => $r[0],
+                    y         => $r[1],
                 };
             } grep { $_ } split(/\n/, @{ $strokes->{data} });
             $stroke->{points} = \@points;
