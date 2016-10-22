@@ -202,7 +202,7 @@ get '/api/rooms' => sub {
 
     return $c->render_json({
         rooms => [
-            map { to_room_json($_) } $rooms
+            map { to_room_json($_) } @$rooms
         ]
     });
 };
