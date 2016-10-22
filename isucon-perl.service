@@ -1,0 +1,14 @@
+[Unit]
+Description=isucon perl API server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/isucon/isucon6f/perl
+ExecStart=/usr/local/bin/carton exec -- plackup -p 80 --max-workers 50 -s Starlet -E production
+Restart=on-failure
+Type = simple
+EnvironmentFile=/etc/isucon-perl.env
+
+[Install]
+WantedBy=multi-user.target
+

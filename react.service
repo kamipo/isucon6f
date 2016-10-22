@@ -1,0 +1,14 @@
+[Unit]
+Description=isucon server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/isucon/isucon6f/react
+ExecStart=/usr/bin/node build/server.js
+Restart=on-failure
+Type = simple
+EnvironmentFile=/etc/react.env
+
+[Install]
+WantedBy=multi-user.target
+
