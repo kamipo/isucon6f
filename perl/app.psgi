@@ -29,7 +29,7 @@ builder {
         response_time => 1,
         error_only    => 1,
         ltsv          => 1,
-        logger        => sub { $logger->print(@_) }
+        logger        => sub { $rotatelogs->print(@_) }
     );
 
     mount '/api/stream/rooms/' => sub {
