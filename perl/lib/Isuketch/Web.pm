@@ -17,6 +17,12 @@ sub config {
         db_user => $ENV{MYSQL_USER} // 'root',
         db_pass => $ENV{MYSQL_PASS} // '',
         db_name => 'isuketch',
+
+        db_host => '10.6.1.6',
+        db_port => 3306,
+        db_user => 'isucon',
+        db_pass => 'isucon',
+        db_name => 'isuketch',
     };
     my $key = shift;
     my $v = $conf->{$key};
