@@ -112,6 +112,18 @@ sub get_stroke_points {
     ], $stroke_id);
 }
 
+sub get_stroke_points_all {
+    my ($dbh, $room_id) = @_;
+    return $dbh->select_all(q[
+        SELECT `p.id`, `stroke_id`, `x`, `y`,
+               s.room_id, s.width, s.red, s.green, s.blue, s.alpha, s.created_at
+        FROM `points` p
+        LEFT JOIN strokes s ON (s.id = p.stroke_id)
+        WHERE `s.room_id` = ?
+        ORDER BY `p.id` ASC
+    ], $room_id);
+}
+
 sub get_strokes {
     my ($dbh, $room_id, $greater_than_id) = @_;
     return $dbh->select_all(q[
@@ -274,11 +286,19 @@ get '/api/rooms/:id' => sub {
         return $c->res;
     }
 
-    my $strokes = get_strokes($self->dbh, $room->{id}, 0);
-    foreach my $stroke (@$strokes) {
-        $stroke->{points} = get_stroke_points($self->dbh, $stroke->{id});
+    my $points = get_stroke_points_all($self->dbh, $room->{id});
+    my $strokes = {};
+    for my $point (@$points) {
+        if (my $s = $strokes->{$point->{stroke_id}}) {
+            $s->{points} //= [];
+            push @{$s->{points}}, $point;
+        } else {
+            my $stroke = $point;
+            $stroke->{id} = $point->{stroke_id};
+            $strokes->{$point->{stroke_id}} = $stroke;
+        }
     }
-    $room->{strokes} = $strokes;
+    $room->{strokes} = [values %strokes];
     $room->{watcher_count} = get_watcher_count($self->dbh, $room->{id});
     return $c->render_json({
         room => to_room_json($room),
