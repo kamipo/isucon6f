@@ -115,7 +115,7 @@ sub get_stroke_points {
 sub get_stroke_points_all {
     my ($dbh, $room_id) = @_;
     return $dbh->select_all(q[
-        SELECT p.`id`, `stroke_id`, `x`, `y`,
+        SELECT `p.id`, `stroke_id`, `x`, `y`,
                s.room_id, s.width, s.red, s.green, s.blue, s.alpha, s.created_at
         FROM `points` p
         LEFT JOIN strokes s ON (s.id = p.stroke_id)
