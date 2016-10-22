@@ -25,7 +25,7 @@ CREATE TABLE `strokes` (
 CREATE TABLE `rooms_by_strokes` (
   `room_id` bigint(20) NOT NULL,
   `last_strokes_id` bigint(20) NOT NULL DEFAULT 0,
-  `strokes` bigint(20) NOT NULL DEFAULT 0,
+  `stroke_count` bigint(20) NOT NULL DEFAULT 0,
   UNIQUE (`room_id`),
   KEY (`last_strokes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
