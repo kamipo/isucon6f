@@ -41,10 +41,8 @@ CREATE TABLE `points` (
 
 CREATE TABLE `tokens` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `csrf_token` varchar(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY (`csrf_token`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `room_watchers` (
