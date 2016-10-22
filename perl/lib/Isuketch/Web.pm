@@ -274,9 +274,32 @@ get '/api/rooms/:id' => sub {
         return $c->res;
     }
 
-    my $strokes = get_strokes($self->dbh, $room->{id}, 0);
+    my $strokes = $dbh->select_all(q[
+        SELECT `id`, `room_id`, `width`, `red`, `green`, `blue`, `alpha`, `created_at`, strokes_points.data
+        FROM `strokes`
+        LEFT JOIN strokes_points ON strokes.id = strokes_points.strokes_id
+        WHERE `room_id` = ?
+        ORDER BY `id` ASC;
+    ], $room_id, $greater_than_id);
+
+#    my $strokes = get_strokes($self->dbh, $room->{id}, 0);
     foreach my $stroke (@$strokes) {
-        $stroke->{points} = get_stroke_points($self->dbh, $stroke->{id});
+        if ($strokes->{data}) {
+            my $id = 1; # 適当でも通らないかな?
+            my @points = map {
+                my @r = split(/\t/, $_);
+                +{
+                    id        => $id++,
+                    stroke_id => $stroke->{id},
+                    x         => $r->[0],
+                    y         => $r->[1],
+                };
+            } grep { $_ } split(/\n/, @{ $strokes->{data} });
+            $stroke->{points} = \@points;
+        } else {
+            # 古いデータ向け
+            $stroke->{points} = get_stroke_points($self->dbh, $stroke->{id});
+        }
     }
     $room->{strokes} = $strokes;
     $room->{watcher_count} = get_watcher_count($self->dbh, $room->{id});
@@ -417,6 +440,8 @@ post '/api/strokes/rooms/:id' => sub {
             (?, ?, ?, ?, ?, ?)
         ], $room->{id}, $posted_stroke->{width}, $posted_stroke->{red}, $posted_stroke->{green}, $posted_stroke->{blue}, $posted_stroke->{alpha});
         $stroke_id = $self->dbh->last_insert_id;
+
+        my $data = "";
         foreach my $point (@{ $posted_stroke->{points} }) {
             $self->dbh->query(q[
                 INSERT INTO `points`
@@ -424,7 +449,12 @@ post '/api/strokes/rooms/:id' => sub {
                 VALUES
                 (?, ?, ?)
             ], $stroke_id, $point->{x}, $point->{y});
+            $data .= join("\t", $point->{x}, $point->{y}) . "\n";
         }
+
+        $self->dbh->query(q[
+            INSERT INTO strokes_points (stroke_id, data) VALUES(?,?)
+        ], $stroke_id, $data);
 
         $self->dbh->query(q[
             UPDATE `rooms_by_strokes` SET `last_strokes_id` = ?, `stroke_count` = `stroke_count` + 1 WHERE `room_id` = ?
