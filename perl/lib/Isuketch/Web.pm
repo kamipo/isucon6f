@@ -298,7 +298,7 @@ get '/api/rooms/:id' => sub {
             $strokes->{$point->{stroke_id}} = $stroke;
         }
     }
-    $room->{strokes} = [values %$strokes];
+    $room->{strokes} = [map { $strokes->{$_} } sort keys %$strokes];
     $room->{watcher_count} = get_watcher_count($self->dbh, $room->{id});
     return $c->render_json({
         room => to_room_json($room),
