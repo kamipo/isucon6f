@@ -49,7 +49,7 @@ sub check_token {
     my ($dbh, $csrf_token) = @_;
     my $token = $dbh->select_row(q[
         SELECT `id`, `csrf_token`, `created_at` FROM `tokens`
-        WHERE `csrf_token` = ?
+        WHERE `id` = ?
           AND `created_at` > CURRENT_TIMESTAMP(6) - INTERVAL 1 DAY
     ], $csrf_token);
     die 'token not found' unless $token;
@@ -156,18 +156,11 @@ post '/api/csrf_token' => sub {
     $self->dbh->query(q[
         INSERT INTO `tokens` (`csrf_token`)
         VALUES
-        (SHA2(CONCAT(RAND(), UUID_SHORT()), 256))
+        ('')
     ]);
 
-    my $id = $self->dbh->last_insert_id;
-    my $token = $self->dbh->select_row(q[
-        SELECT `id`, `csrf_token`, `created_at`
-        FROM `tokens`
-        WHERE `id` = ?
-    ], $id);
-
     return $c->render_json({
-        token => $token->{csrf_token}
+        token => $self->dbh->last_insert_id
     });
 };
 
