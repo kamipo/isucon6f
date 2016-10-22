@@ -173,6 +173,7 @@ post '/api/csrf_token' => sub {
 
 get '/api/rooms' => sub {
     my ($self, $c) = @_;
+    if (0) {
     my $results = $self->dbh->select_all(q[
         SELECT `room_id`, MAX(`id`) AS `max_id`
         FROM `strokes`
@@ -187,10 +188,21 @@ get '/api/rooms' => sub {
         $room->{stroke_count} = scalar @{ get_strokes($self->dbh, $room->{id}, 0) };
         push @rooms, $room;
     }
+}
+
+    my $rooms = dbh->select_all(q[
+        SELECT
+            `rooms`.`id` AS `id`m `name`, `canvas_width`, `canvas_height`, `created_at`,
+            `last_strokes_id`.`stroke_count`
+        FROM `rooms_by_strokes`
+        JOIN `rooms` ON `room_id` = `rooms`.`id`
+        ORDER BY `last_strokes_id` DESC
+        LIMIT 100
+    ]);
 
     return $c->render_json({
         rooms => [
-            map { to_room_json($_) } @rooms
+            map { to_room_json($_) } $rooms
         ]
     });
 };
@@ -235,6 +247,11 @@ post '/api/rooms' => sub {
             VALUES
             (?, ?)
         ], $room_id, $token->{id});
+
+        $self->dbh->query(q[
+            INSERT INTO `rooms_by_strokes` (`room_id`) VALUES(?)
+        ], $room_id);
+
         $txn->commit;
     };
     if (my $e = $@) {
@@ -415,6 +432,11 @@ post '/api/strokes/rooms/:id' => sub {
                 (?, ?, ?)
             ], $stroke_id, $point->{x}, $point->{y});
         }
+
+        $self->dbh->query(q[
+            UPDATE `rooms_by_strokes` SET `last_strokes_id` = ?, `stroke_count` = `stroke_count` + 1 WHERE `room_id` = ?
+        ], $strokes_id, $room_id);
+
         $txn->commit;
     };
     if (my $e = $@) {
