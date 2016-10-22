@@ -32,7 +32,7 @@ builder {
         logger        => sub { $rotatelogs->print(@_) }
     );
 
-    mount '/api/stream/rooms/' => sub {
+    mount '/' => sub {
         my ($env) = @_;
         if ($env->{PATH_INFO} =~ m<\A/api/stream/rooms/([^/]+)\z>) {
             return $app->get_api_stream_room($env, $1);
@@ -40,8 +40,6 @@ builder {
             return $psgi_app->($env);
         }
     };
-
-    $app;
 };
 
 __END__
