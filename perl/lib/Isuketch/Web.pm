@@ -290,11 +290,11 @@ get '/api/rooms/:id' => sub {
     my $strokes = {};
     for my $point (@$points) {
         if (my $s = $strokes->{$point->{stroke_id}}) {
+            $s->{points} //= [];
             push @{$s->{points}}, $point;
         } else {
-            my $stroke = \%$point;
+            my $stroke = $point;
             $stroke->{id} = $point->{stroke_id};
-            $stroke->{point} = [$point];
             $strokes->{$point->{stroke_id}} = $stroke;
         }
     }
