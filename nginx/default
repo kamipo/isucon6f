@@ -1,0 +1,43 @@
+upstream app {
+  server 127.0.0.1:10443;
+  server 13.78.81.197:10443;
+#  server 13.78.86.165:10443;
+  keepalive 64;
+}
+
+# Default server configuration
+#
+server {
+        #listen 80 default_server;
+        #listen [::]:80 default_server;
+
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
+
+ssl on;
+ssl_certificate     /etc/nginx/conf.d/oreore.crt;
+ssl_certificate_key /etc/nginx/conf.d/oreore.key;
+server_name  localhost;
+
+        root /var/www/html;
+
+        # Add index.php to the list if you are using PHP
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+location /bundle.js {
+root /home/isucon/isucon6f/react/public;
+}
+
+        location / {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_pass https://app;
+
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                #try_files $uri $uri/ =404;
+        }
+}
